@@ -2,9 +2,9 @@
 function db_connect()
 {   
     $servername = "127.0.0.1"; 
-    $username = "ugzkj7rk5jeky"; 
-    $password = "xq8htnm6wsau"; 
-    $dbname = "dbpgpuxfegqmrr"; 
+    $username = "uprfvkaszh1sa"; 
+    $password = "qef1gklcx7gc"; 
+    $dbname = "db0lucbi4dglvy"; 
 
 
 

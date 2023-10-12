@@ -20,7 +20,7 @@ $richMenuId_A = 'richmenu-800a9dac81e6ebbe2749228858a18f85';
 $richMenuId_B = 'richmenu-6e1430949a5c68c10515606828dcd559';
 $branchId = '10132'; //slipok
 $apiKey = 'SLIPOKHD9SG2I'; //slipok
-$PackageArray = array('hbogo', 'disney', 'gagaoolala', 'hbogo', 'joox', 'monomax', 'netflix', 'prime', 'spotify', 'trueid', 'viu', 'wetv', 'youku', 'youtube');
+$PackageArray = getAll_DataTable('Product_data', 'products');
 
 
 $messages = [];
@@ -33,7 +33,7 @@ if ($profileJson == true) {
     //$result = uploadRichMenuImage($richMenuId, $imagePath);
 
     if ($text == 'ทดสอบ') {
-        
+
     } elseif ($text == 'แจ้งการชำระเงิน' && $messageType == 'text') {
         $messages['replyToken'] = $replyToken;
         $flexMessageJsonPath = './flexmessage/form_order.json'; // เปลี่ยนเป็นเส้นทางที่ถูกต้องถ้าไฟล์อยู่ในโฟลเดอร์อื่น
@@ -111,28 +111,30 @@ if ($profileJson == true) {
     } elseif ($text == 'สมัครบริการเพิ่มเติม') {
         getPackagesAndSendImageCarousel($userId);
     } else {
-        $ProductArray = getAllProductsByProductData();
+        $ProductArray = getAll_DataTable('Product_key', 'products');
         if (in_array($text, $PackageArray)) {
-            getProductsAndSendImageCarousel($userId,$text);
+            getProductsAndSendImageCarousel($userId, $text);
+            exit();
+        } elseif (in_array($text, $ProductArray)) {
+            $order = createNewOrder($userId, $text, 'order_a');
+            $image = getProduct($text, "imageUrl");
+            $messages['replyToken'] = $replyToken;
+            $flexMessageJsonPath = './flexmessage/callback_order.json';
+            $flexMessageJson = file_get_contents($flexMessageJsonPath);
+
+            $flexMessageJson = str_replace("https://www.streamth.co/wp-content/uploads/2023/09/FM_GF_002.jpg", $image, $flexMessageJson);
+
+            $flexMessageJson = str_replace("ออเดอร์ของท่าน คือ :", "ออเดอร์ของท่าน คือ : $order", $flexMessageJson);
+            $flexMessageJson = str_replace("cf:", "cf: $order", $flexMessageJson);
+            $flexMessageArray = json_decode($flexMessageJson, true);
+            $encodedJson = json_encode($flexMessageArray);
+            $results = sendFlexMessage($userId, $encodedJson, $logFilePath);
+            exit();
+        } else {
+            $message = getFormatTextMessage("สวัสดีคุณ " . $profileJson['displayName']);
+            $results = sentMessage(json_encode(['replyToken' => $replyToken, 'messages' => [$message],]), $LINEDatas);
             exit();
         }
-        elseif(in_array($text, $ProductArray)){
-        $order = createNewOrder($userId,$text,'order_a'); 
-        $image = getProduct($text, "imageUrl");
-        $messages['replyToken'] = $replyToken;
-        $flexMessageJsonPath = './flexmessage/callback_order.json';
-        $flexMessageJson = file_get_contents($flexMessageJsonPath);
-        
-        $flexMessageJson = str_replace("https://www.streamth.co/wp-content/uploads/2023/09/FM_GF_002.jpg", $image, $flexMessageJson);
-
-        $flexMessageJson = str_replace("ออเดอร์ของท่าน คือ :", "ออเดอร์ของท่าน คือ : $order", $flexMessageJson);
-        $flexMessageJson = str_replace("cf:", "cf: $order", $flexMessageJson);
-        $flexMessageArray = json_decode($flexMessageJson, true);
-        $encodedJson = json_encode($flexMessageArray);
-        $results = sendFlexMessage($userId, $encodedJson, $logFilePath);
-        }
-        $message = getFormatTextMessage("สวัสดีคุณ " . $profileJson['displayName']);
-        $results = sentMessage(json_encode(['replyToken' => $replyToken, 'messages' => [$message],]), $LINEDatas);
     }
 } elseif ($profileJson == false) {
     setRichMenuForUser($userId, $richMenuId_A);

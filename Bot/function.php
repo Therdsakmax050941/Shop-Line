@@ -1,17 +1,18 @@
 <?php
-function pushMsg($arrayHeader,$arrayPostData){
+function pushMsg($arrayHeader, $arrayPostData)
+{
     $strUrl = "https://api.line.me/v2/bot/message/push";
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL,$strUrl);
+    curl_setopt($ch, CURLOPT_URL, $strUrl);
     curl_setopt($ch, CURLOPT_HEADER, false);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $arrayHeader);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($arrayPostData));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     $result = curl_exec($ch);
-    curl_close ($ch);
- }
+    curl_close($ch);
+}
 function db_con()
 {
     $db_status = 0;
@@ -21,10 +22,11 @@ function db_con()
         $dbUser = 'root'; // ชื่อผู้ใช้ของฐานข้อมูล
         $dbPass = ''; // รหัสผ่านของฐานข้อมูล
     } else {
-        $dbHost = '127.0.0.1'; // โฮสต์ฐานข้อมูล
-        $dbUser = 'ugzkj7rk5jeky'; // ชื่อผู้ใช้ของฐานข้อมูล
-        $dbPass = 'xq8htnm6wsau'; // รหัสผ่านของฐานข้อมูล
-        $dbName = 'dbpgpuxfegqmrr';
+        $dbHost = "127.0.0.1";
+        $dbName = "dbbfubligfvxrz";
+        $dbUser = "uwrhjn5vjugc9";
+        $dbPass = "vfj1btkr6jel";
+        
     }
 
     try {
@@ -272,7 +274,8 @@ function sentMessage($encodeJson, $datas)
 
     return $datasReturn;
 }
-function setRichMenuForUser($userId,$richMenuId) {
+function setRichMenuForUser($userId, $richMenuId)
+{
     $channelAccessToken = con_line();
     $apiUrl = 'https://api.line.me/v2/bot/user/' . $userId . '/richmenu/' . $richMenuId;
 
@@ -302,7 +305,8 @@ function setRichMenuForUser($userId,$richMenuId) {
     file_put_contents($logFileName, $logMessage, FILE_APPEND);
 
 }
-function uploadRichMenuImage($richMenuId, $imagePath) {
+function uploadRichMenuImage($richMenuId, $imagePath)
+{
     $channelAccessToken = con_line();
     $apiUrl = 'https://api.line.me/v2/bot/richmenu/' . $richMenuId . '/content';
 
@@ -329,7 +333,8 @@ function uploadRichMenuImage($richMenuId, $imagePath) {
     }
     file_put_contents($logFileName, $logMessage, FILE_APPEND);
 }
-function getPackagesFromDatabase() {
+function getPackagesFromDatabase()
+{
 
     $pdo = db_con();
 
@@ -361,13 +366,14 @@ function getPackagesFromDatabase() {
     return $products;
 }
 
-function getProductsFromDatabase($product_name) {
+function getProductsFromDatabase($product_name)
+{
     $pdo = db_con();
 
-    $sql = "SELECT * FROM products WHERE product_data = :product_name"; 
+    $sql = "SELECT * FROM products WHERE product_data = :product_name";
 
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(":product_name", $product_name, PDO::PARAM_STR); 
+    $stmt->bindParam(":product_name", $product_name, PDO::PARAM_STR);
 
     $stmt->execute();
 
@@ -392,7 +398,8 @@ function getProductsFromDatabase($product_name) {
     return $products;
 }
 
-function createColumnsFromProducts($products) {
+function createColumnsFromProducts($products)
+{
     $columns = array();
 
     foreach ($products as $product) {
@@ -410,7 +417,8 @@ function createColumnsFromProducts($products) {
     return $columns;
 }
 
-function getProductsAndSendImageCarousel($userId, $text) {
+function getProductsAndSendImageCarousel($userId, $text)
+{
     $products = getProductsFromDatabase($text);
     $columns = createColumnsFromProducts($products);
 
@@ -434,7 +442,8 @@ function getProductsAndSendImageCarousel($userId, $text) {
         file_put_contents($logFilePath, "ไม่สำเร็จ\n{$result}", FILE_APPEND);
     }
 }
-function getPackagesAndSendImageCarousel($userId) {
+function getPackagesAndSendImageCarousel($userId)
+{
     $products = getPackagesFromDatabase();
     $columns = createColumnsFromProducts($products);
 
@@ -501,12 +510,13 @@ function sendTemplateMessage($to, $template, $logFilePath)
         return false; // การส่ง Template Message ไม่สำเร็จ
     }
 }
-function getAllProductsByProductData() {
+function getAll_DataTable($row_data , $table)
+{
     // กำหนดการเชื่อมต่อกับฐานข้อมูล
     $pdo = db_con(); // แทน db_con() ด้วยฟังก์ชันที่ใช้ในการเชื่อมต่อกับฐานข้อมูลของคุณ
 
     // คำสั่ง SQL เพื่อดึงข้อมูล product_data ทั้งหมด
-    $sql = "SELECT DISTINCT product_key FROM products";
+    $sql = "SELECT DISTINCT $row_data FROM $table";
 
     // ประมวลผลคำสั่ง SQL
     $stmt = $pdo->prepare($sql);
@@ -518,7 +528,7 @@ function getAllProductsByProductData() {
     // วนลูปเพื่อดึงข้อมูลแต่ละแถว
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         // เพิ่มข้อมูล product_data ในแต่ละแถวเข้าใน array
-        $productDataArray[] = $row["product_key"];
+        $productDataArray[] = $row["$row_data"];
     }
 
     // ปิดการเชื่อมต่อกับฐานข้อมูล
@@ -527,38 +537,40 @@ function getAllProductsByProductData() {
     // ส่งผลลัพธ์กลับเป็น array
     return $productDataArray;
 }
-function getProduct($product_data,$rowdata) {
-  // เชื่อมต่อฐานข้อมูล
-  $logFilePath = 'log.txt';
-  $pdo = db_con(); // สร้างฟังก์ชัน db_con() ของคุณเองเพื่อเชื่อมต่อกับฐานข้อมูล
- 
-  // สร้างคำสั่ง SQL สำหรับดึงราคาสินค้าจากฐานข้อมูล
-  $sql = "SELECT $rowdata FROM products WHERE product_key = :product_data";
+function getProduct($product_data, $rowdata)
+{
+    // เชื่อมต่อฐานข้อมูล
+    $logFilePath = 'log.txt';
+    $pdo = db_con(); // สร้างฟังก์ชัน db_con() ของคุณเองเพื่อเชื่อมต่อกับฐานข้อมูล
 
-  // เตรียมคำสั่ง SQL สำหรับการดึงราคา
-  $stmt = $pdo->prepare($sql);
+    // สร้างคำสั่ง SQL สำหรับดึงราคาสินค้าจากฐานข้อมูล
+    $sql = "SELECT $rowdata FROM products WHERE product_key = :product_data";
 
-  // ผูกค่า `$product_data` กับพารามิเตอร์ในคำสั่ง SQL
-  $stmt->bindParam(":product_data", $product_data, PDO::PARAM_STR);
+    // เตรียมคำสั่ง SQL สำหรับการดึงราคา
+    $stmt = $pdo->prepare($sql);
 
-  // ประมวลผลคำสั่ง SQL สำหรับการดึงราคา
-  $stmt->execute();
+    // ผูกค่า `$product_data` กับพารามิเตอร์ในคำสั่ง SQL
+    $stmt->bindParam(":product_data", $product_data, PDO::PARAM_STR);
 
-  // ดึงข้อมูลราคาจากผลลัพธ์
-  $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    // ประมวลผลคำสั่ง SQL สำหรับการดึงราคา
+    $stmt->execute();
+
+    // ดึงข้อมูลราคาจากผลลัพธ์
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
     $pdo = null;
-  // ตรวจสอบว่าข้อมูลราคาถูกดึงมาหรือไม่
-  if ($row) {
-      return $row[$rowdata]; // ส่งค่าราคากลับ
-  } else {
-      return false; // ถ้าไม่พบข้อมูลราคา
-  }
+    // ตรวจสอบว่าข้อมูลราคาถูกดึงมาหรือไม่
+    if ($row) {
+        return $row[$rowdata]; // ส่งค่าราคากลับ
+    } else {
+        return false; // ถ้าไม่พบข้อมูลราคา
+    }
 }
-function createNewOrder($User_ID, $product_key, $status) {
+function createNewOrder($User_ID, $product_key, $status)
+{
     // เชื่อมต่อฐานข้อมูล
     $pdo = db_con(); // สร้างฟังก์ชัน db_con() ของคุณเองเพื่อเชื่อมต่อกับฐานข้อมูล
     $amount = getProduct($product_key, "price");
-    get_log ("amount: " , $amount);
+    get_log("amount: ", $amount);
     if ($amount === false) {
         return false; // ไม่สามารถหาข้อมูลราคาสินค้าได้
     }
@@ -586,9 +598,10 @@ function createNewOrder($User_ID, $product_key, $status) {
         return false;
     }
 }
-function get_log($title,$data ){
+function get_log($title, $data)
+{
     $logFilePath = 'log.txt';
-    file_put_contents($logFilePath, $title ." ". $data ."\n", FILE_APPEND);
+    file_put_contents($logFilePath, $title . " " . $data . "\n", FILE_APPEND);
 }
 
 ?>
