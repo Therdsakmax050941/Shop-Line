@@ -130,6 +130,7 @@
   </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="../assets/js/function/package.js"></script>
 <script src="../assets/js/function/function.js"></script>
 <script>
   $(document).ready(function() {

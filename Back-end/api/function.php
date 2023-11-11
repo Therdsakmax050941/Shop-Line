@@ -9,9 +9,9 @@ function db_con()
         $dbPass = ''; // รหัสผ่านของฐานข้อมูล
     } else {
         $dbHost = "127.0.0.1";
-        $dbName = "dbbfubligfvxrz";
-        $dbUser = "uwrhjn5vjugc9";
-        $dbPass = "vfj1btkr6jel";
+        $dbName = "db0lucbi4dglvy";
+        $dbUser = "uprfvkaszh1sa";
+        $dbPass = "b+~~*6.hBlxl";
         
     }
 
@@ -28,23 +28,23 @@ function uploadImage($imageFile) {
         return false;
     }
     
-    $uploadDirectory = './Img/Products/';
-    $baseUrl = 'http://localhost:8000/Back-end/api/';
-    
+    $uploadDirectory = __DIR__ . '/imgs/';
+    $baseUrl = 'http://localhost:8000/Back-end/api/imgs';
 
     $fileName = uniqid() . '_' . $imageFile['name'];
-    
     $uploadPath = $uploadDirectory . $fileName;
     
-
-    if (move_uploaded_file($imageFile['tmp_name'], $uploadPath)) {
-        // สร้างที่อยู่เต็มของไฟล์รูปภาพ
-        $fullImagePath = $baseUrl . $uploadPath;
-        return $fullImagePath; // ส่งคืนที่อยู่เต็มของไฟล์รูปภาพ
+    if (is_uploaded_file($imageFile['tmp_name']) && file_exists($uploadDirectory)) {
+        if (move_uploaded_file($imageFile['tmp_name'], $uploadPath)) {
+            return $baseUrl . '/' . $fileName;
+        } else {
+            return false;
+        }
     } else {
         return false;
     }
 }
+
 
 function insertPackage($title, $imageUrl, $productData) {
     try {

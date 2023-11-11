@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $ProductCode = $_POST['Product_code'];
 
         if ($uploadedImagePath) {
-            // สร้าง JSON response หรือดำเนินการตามที่ต้องการ
+            // สร้าง JSON response 
             insertPackage($ProductTitle, $uploadedImagePath, $ProductCode);
             $response = array('message' => true, 'image_url' => $uploadedImagePath);
             echo json_encode($response);
@@ -24,6 +24,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         file_put_contents('log.txt', "บันทึกข้อมูลสำเร็จ at " . date('Y-m-d H:i:s'));
         exit();
     } 
+} else{
+    $response = array('message' => 'Method not allowed');
+    echo json_encode($response);
+    file_put_contents('log.txt', "Method not allowed at " . date('Y-m-d H:i:s'));
+    exit();
 }
 
 ?>

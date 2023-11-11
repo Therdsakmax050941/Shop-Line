@@ -90,15 +90,15 @@
                                     </select>
                                     <label>ชื่อสินค้า</label>
                                     <div class="input-group mb-3">
-                                    <input type="text" class="form-control" id="productName" Name="productName" placeholder="ชื่อสินค้า" aria-label="productName" aria-describedby="productName" required>
+                                        <input type="text" class="form-control" id="productName" Name="productName" placeholder="ชื่อสินค้า" aria-label="productName" aria-describedby="productName" required>
                                     </div>
                                     <label>ราคา</label>
                                     <div class="input-group mb-3">
-                                    <input type="number" class="form-control" id="price" Name="price" placeholder="ราคาสินค้า" aria-label="price" aria-describedby="price" required>
+                                        <input type="number" class="form-control" id="price" Name="price" placeholder="ราคาสินค้า" aria-label="price" aria-describedby="price" required>
                                     </div>
                                     <label>จำนวนสินค้า</label>
                                     <div class="input-group mb-3">
-                                    <input type="number" class="form-control" id="qty" Name="price" placeholder="จำนวนสินค้า" aria-label="price" aria-describedby="price" required>
+                                        <input type="number" class="form-control" id="qty" Name="price" placeholder="จำนวนสินค้า" aria-label="price" aria-describedby="price" required>
                                     </div>
                                     <label>รูปภาพสินค้า</label>
                                     <div class="input-group mb-3">
@@ -106,7 +106,7 @@
                                     </div>
                                     <label>รหัสหมวดหมู่</label>
                                     <div class="input-group mb-3">
-                                    <input type="text" class="form-control" id="product_code" Name="product_code" placeholder="รหัสสินค้าจะสร้างให้อัตโนมัติ" aria-label="product_code" aria-describedby="product_code" required>
+                                        <input type="text" class="form-control" id="product_code" Name="product_code" placeholder="รหัสสินค้าจะสร้างให้อัตโนมัติ" aria-label="product_code" aria-describedby="product_code" required>
                                     </div>
                                     <div class="text-center">
                                         <button type="submit" id="submitBtnProduct" class="btn btn-round bg-gradient-info btn-lg w-100 mt-4 mb-0">สร้าง</button>
@@ -143,8 +143,46 @@
         </table>
     </div>
 </div>
+<div>
+    <div id="editProductModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Product</h5>
+                </div>
+                <div class="modal-body">
+                    <!-- สร้างแบบฟอร์มแก้ไขสินค้า ที่นี่ -->
+                    <form id="edit-product-form">
+                        <input type="hidden" id="edit-product-id" name="product_id" value="">
+                        <div class="form-group">
+                            <label for="edit-price">Price</label>
+                            <input type="text" class="form-control" id="edit-price" name="price">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-qty">Quantity</label>
+                            <input type="text" class="form-control" id="edit-qty" name="qty">
+                        </div>
+                        <div class="form-group">
+                            <img id="edit-existing-image" src="" alt="Existing Image" width="100px" height="100px">
+                            <button id="edit-upload-image-button" class="btn btn-primary">Upload New Image</button>
+                            <input type="file" id="edit-image-file" style="display: none">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveEditedProduct()">Save Changes</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="../assets/js/function/product.js"></script>
 <script src="../assets/js/function/function.js"></script>
+<script src="../assets/js/function/gencode.js"></script>
 <script>
     $(document).ready(function() {
         loadTableProduct()
